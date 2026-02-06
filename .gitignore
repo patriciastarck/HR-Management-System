@@ -1,0 +1,23 @@
+# Pastas de compilação e binários
+[Bb]in/
+[Oo]bj/
+
+# Configurações do Visual Studio e VS Code
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Arquivos de log e temporários do Windows
+*.log
+Thumbs.db
+Desktop.ini
+
+# Entity Framework e Bancos de Dados locais
+*.db
+*.sqlite
+appsettings.Development.json
+
+# Outros arquivos de sistema
+.DS_Store
