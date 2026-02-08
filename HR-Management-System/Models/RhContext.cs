@@ -15,21 +15,21 @@ public partial class RhContext : DbContext
     {
     }
 
-    public virtual DbSet<TbCargo> TbCargos { get; set; }
+    public virtual DbSet<Department> Departments { get; set; }
 
-    public virtual DbSet<TbDepartamento> TbDepartamentos { get; set; }
+    public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<TbFuncionario> TbFuncionarios { get; set; }
+    public virtual DbSet<Jobtitle> Jobtitles { get; set; }
 
-    public virtual DbSet<TbParticipacaoTreinamento> TbParticipacaoTreinamentos { get; set; }
+    public virtual DbSet<Request> Requests { get; set; }
 
-    public virtual DbSet<TbPonto> TbPontos { get; set; }
+    public virtual DbSet<Systemuser> Systemusers { get; set; }
 
-    public virtual DbSet<TbSolicitacao> TbSolicitacaos { get; set; }
+    public virtual DbSet<Timesheet> Timesheets { get; set; }
 
-    public virtual DbSet<TbTreinamento> TbTreinamentos { get; set; }
+    public virtual DbSet<Training> Training { get; set; }
 
-    public virtual DbSet<TbUsuario> TbUsuarios { get; set; }
+    public virtual DbSet<Trainingparticipation> Trainingparticipations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -37,194 +37,179 @@ public partial class RhContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<TbCargo>(entity =>
+        modelBuilder.Entity<Department>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("tb_cargo_pkey");
+            entity.HasKey(e => e.Id).HasName("department_pkey");
 
-            entity.ToTable("tb_cargo");
+            entity.ToTable("department");
 
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.Descricao).HasColumnName("descricao");
-            entity.Property(e => e.Titulo)
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Name)
                 .HasMaxLength(100)
-                .HasColumnName("titulo");
+                .HasColumnName("name");
         });
 
-        modelBuilder.Entity<TbDepartamento>(entity =>
+        modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("tb_departamento_pkey");
+            entity.HasKey(e => e.Id).HasName("employee_pkey");
 
-            entity.ToTable("tb_departamento");
+            entity.ToTable("employee");
 
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.Nome)
-                .HasMaxLength(100)
-                .HasColumnName("nome");
-        });
+            entity.HasIndex(e => e.Cpf, "employee_cpf_key").IsUnique();
 
-        modelBuilder.Entity<TbFuncionario>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("tb_funcionario_pkey");
+            entity.HasIndex(e => e.Email, "employee_email_key").IsUnique();
 
-            entity.ToTable("tb_funcionario");
+            entity.HasIndex(e => e.UserId, "employee_user_id_key").IsUnique();
 
-            entity.HasIndex(e => e.Cpf, "tb_funcionario_cpf_key").IsUnique();
-
-            entity.HasIndex(e => e.Email, "tb_funcionario_email_key").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.Ativo)
-                .HasDefaultValue(true)
-                .HasColumnName("ativo");
-            entity.Property(e => e.CargoId).HasColumnName("cargo_id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Cpf)
-                .HasMaxLength(11)
-                .IsFixedLength()
+                .HasMaxLength(14)
                 .HasColumnName("cpf");
-            entity.Property(e => e.DataAdmissao).HasColumnName("data_admissao");
-            entity.Property(e => e.DepartamentoId).HasColumnName("departamento_id");
+            entity.Property(e => e.DepartmentId).HasColumnName("department_id");
             entity.Property(e => e.Email)
-                .HasMaxLength(256)
-                .HasColumnName("email");
-            entity.Property(e => e.Nome)
-                .HasMaxLength(256)
-                .HasColumnName("nome");
-            entity.Property(e => e.Salario)
-                .HasPrecision(10, 2)
-                .HasColumnName("salario");
-            entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
-
-            entity.HasOne(d => d.Cargo).WithMany(p => p.TbFuncionarios)
-                .HasForeignKey(d => d.CargoId)
-                .HasConstraintName("fk_func_cargo");
-
-            entity.HasOne(d => d.Departamento).WithMany(p => p.TbFuncionarios)
-                .HasForeignKey(d => d.DepartamentoId)
-                .HasConstraintName("fk_func_depto");
-
-            entity.HasOne(d => d.Usuario).WithMany(p => p.TbFuncionarios)
-                .HasForeignKey(d => d.UsuarioId)
-                .HasConstraintName("fk_func_usuario");
-        });
-
-        modelBuilder.Entity<TbParticipacaoTreinamento>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("tb_participacao_treinamento_pkey");
-
-            entity.ToTable("tb_participacao_treinamento");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.DataFim).HasColumnName("data_fim");
-            entity.Property(e => e.DataInicio).HasColumnName("data_inicio");
-            entity.Property(e => e.FuncionarioId).HasColumnName("funcionario_id");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .HasColumnName("status");
-            entity.Property(e => e.Tipo)
-                .HasMaxLength(50)
-                .HasColumnName("tipo");
-            entity.Property(e => e.TreinamentoId).HasColumnName("treinamento_id");
-
-            entity.HasOne(d => d.Funcionario).WithMany(p => p.TbParticipacaoTreinamentos)
-                .HasForeignKey(d => d.FuncionarioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_part_func");
-
-            entity.HasOne(d => d.Treinamento).WithMany(p => p.TbParticipacaoTreinamentos)
-                .HasForeignKey(d => d.TreinamentoId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_part_treinamento");
-        });
-
-        modelBuilder.Entity<TbPonto>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("tb_ponto_pkey");
-
-            entity.ToTable("tb_ponto");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.Data).HasColumnName("data");
-            entity.Property(e => e.FuncionarioId).HasColumnName("funcionario_id");
-            entity.Property(e => e.HoraEntrada).HasColumnName("hora_entrada");
-            entity.Property(e => e.HoraSaida).HasColumnName("hora_saida");
-
-            entity.HasOne(d => d.Funcionario).WithMany(p => p.TbPontos)
-                .HasForeignKey(d => d.FuncionarioId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_ponto_func");
-        });
-
-        modelBuilder.Entity<TbSolicitacao>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("tb_solicitacao_pkey");
-
-            entity.ToTable("tb_solicitacao");
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.DataFim).HasColumnName("data_fim");
-            entity.Property(e => e.DataInicio).HasColumnName("data_inicio");
-            entity.Property(e => e.FuncionarioId).HasColumnName("funcionario_id");
-            entity.Property(e => e.Status)
-                .HasMaxLength(50)
-                .HasColumnName("status");
-            entity.Property(e => e.Tipo)
                 .HasMaxLength(100)
-                .HasColumnName("tipo");
+                .HasColumnName("email");
+            entity.Property(e => e.HireDate).HasColumnName("hire_date");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.JobTitleId).HasColumnName("job_title_id");
+            entity.Property(e => e.Name)
+                .HasMaxLength(150)
+                .HasColumnName("name");
+            entity.Property(e => e.Salary)
+                .HasPrecision(10, 2)
+                .HasColumnName("salary");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.Funcionario).WithMany(p => p.TbSolicitacaos)
-                .HasForeignKey(d => d.FuncionarioId)
+            entity.HasOne(d => d.Department).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.DepartmentId)
+                .HasConstraintName("fk_department");
+
+            entity.HasOne(d => d.JobTitle).WithMany(p => p.Employees)
+                .HasForeignKey(d => d.JobTitleId)
+                .HasConstraintName("fk_job_title");
+
+            entity.HasOne(d => d.User).WithOne(p => p.Employee)
+                .HasForeignKey<Employee>(d => d.UserId)
+                .HasConstraintName("fk_user");
+        });
+
+        modelBuilder.Entity<Jobtitle>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("jobtitle_pkey");
+
+            entity.ToTable("jobtitle");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Title)
+                .HasMaxLength(100)
+                .HasColumnName("title");
+        });
+
+        modelBuilder.Entity<Request>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("request_pkey");
+
+            entity.ToTable("request");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+            entity.Property(e => e.EndDate).HasColumnName("end_date");
+            entity.Property(e => e.StartDate).HasColumnName("start_date");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("status");
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .HasColumnName("type");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.EmployeeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_solic_func");
+                .HasConstraintName("fk_employee_request");
         });
 
-        modelBuilder.Entity<TbTreinamento>(entity =>
+        modelBuilder.Entity<Systemuser>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("tb_treinamento_pkey");
+            entity.HasKey(e => e.Id).HasName("systemuser_pkey");
 
-            entity.ToTable("tb_treinamento");
+            entity.ToTable("systemuser");
 
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
-            entity.Property(e => e.CargaHoraria).HasColumnName("carga_horaria");
-            entity.Property(e => e.Descricao).HasColumnName("descricao");
-            entity.Property(e => e.Tema)
-                .HasMaxLength(200)
-                .HasColumnName("tema");
-        });
+            entity.HasIndex(e => e.Login, "systemuser_login_key").IsUnique();
 
-        modelBuilder.Entity<TbUsuario>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("tb_usuario_pkey");
-
-            entity.ToTable("tb_usuario");
-
-            entity.HasIndex(e => e.Login, "tb_usuario_login_key").IsUnique();
-
-            entity.Property(e => e.Id)
-                .HasDefaultValueSql("gen_random_uuid()")
-                .HasColumnName("id");
+            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Login)
                 .HasMaxLength(50)
                 .HasColumnName("login");
-            entity.Property(e => e.Papel)
+            entity.Property(e => e.Password)
+                .HasMaxLength(255)
+                .HasColumnName("password");
+            entity.Property(e => e.Role)
                 .HasMaxLength(50)
-                .HasColumnName("papel");
-            entity.Property(e => e.Senha)
-                .HasMaxLength(256)
-                .HasColumnName("senha");
+                .HasColumnName("role");
+        });
+
+        modelBuilder.Entity<Timesheet>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("timesheet_pkey");
+
+            entity.ToTable("timesheet");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Date).HasColumnName("date");
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+            entity.Property(e => e.EntryTime).HasColumnName("entry_time");
+            entity.Property(e => e.ExitTime).HasColumnName("exit_time");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Timesheets)
+                .HasForeignKey(d => d.EmployeeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_employee_timesheet");
+        });
+
+        modelBuilder.Entity<Training>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("training_pkey");
+
+            entity.ToTable("training");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.HoursDuration).HasColumnName("hours_duration");
+            entity.Property(e => e.Topic)
+                .HasMaxLength(150)
+                .HasColumnName("topic");
+        });
+
+        modelBuilder.Entity<Trainingparticipation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("trainingparticipation_pkey");
+
+            entity.ToTable("trainingparticipation");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
+            entity.Property(e => e.EndDate).HasColumnName("end_date");
+            entity.Property(e => e.StartDate).HasColumnName("start_date");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasColumnName("status");
+            entity.Property(e => e.TrainingId).HasColumnName("training_id");
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .HasColumnName("type");
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Trainingparticipations)
+                .HasForeignKey(d => d.EmployeeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_employee_participation");
+
+            entity.HasOne(d => d.Training).WithMany(p => p.Trainingparticipations)
+                .HasForeignKey(d => d.TrainingId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_training_participation");
         });
 
         OnModelCreatingPartial(modelBuilder);
