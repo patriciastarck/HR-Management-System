@@ -1,4 +1,6 @@
 using HR_Management_System.Models;
+using HR_Management_System.Repositories;
+using HR_Management_System.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<RhContext>();
+
+// Register repository and service for Controller -> Service -> Repository flow
+builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
+builder.Services.AddScoped<SystemUserService>();
 
 var app = builder.Build();
 

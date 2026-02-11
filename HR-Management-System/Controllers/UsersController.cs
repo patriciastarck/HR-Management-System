@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HR_Management_System.Models;
 using HR_Management_System.Dtos;
+using HR_Management_System.Services;
 
 namespace HR_Management_System.Controllers;
 
@@ -9,11 +10,11 @@ namespace HR_Management_System.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly RhContext _context;
+    private readonly SystemUserService _service;
 
-    public UsersController(RhContext context)
+    public UsersController(SystemUserService service)
     {
-        _context = context;
+        _service = service;
     }
 
     [HttpPost]
@@ -36,16 +37,27 @@ public class UsersController : ControllerBase
             Role = dto.Role
         };
 
-        await _context.Systemusers.AddAsync(user);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        try
+        {
+            var created = await _service.CreateAsync(user);
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+        }
+        catch (ArgumentException ex)
+        {
+            // validation problems -> bad request
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            // uniqueness or repository failure -> conflict
+            return Conflict(new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _context.Systemusers.FindAsync(id);
+        var user = await _service.GetByIdAsync(id);
 
         if (user is null)
         {
