@@ -47,6 +47,11 @@ appsettings.Local.json
 secrets.json
 
 # Sistema Operacional
+
+bin/
+obj/Debug/
+appsettings.Development.json
+
 Thumbs.db
 .DS_Store
 
