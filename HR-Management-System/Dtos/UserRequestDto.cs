@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HR_Management_System.Dtos;
 
-public class CreateUserDto
+public class UserRequestDto
 {
     [Required]
     [MaxLength(50)]
