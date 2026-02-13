@@ -38,4 +38,9 @@ public class SystemUserRepository : ISystemUserRepository
     {
         return await _context.Systemusers.FindAsync(id);
     }
+
+    public async Task<IEnumerable<Systemuser>> GetAllAsync()
+    {
+        return await _context.Systemusers.ToListAsync();
+    }
 }
