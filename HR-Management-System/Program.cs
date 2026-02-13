@@ -1,6 +1,7 @@
 using HR_Management_System.Models;
 using HR_Management_System.Repositories;
 using HR_Management_System.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,11 @@ builder.Services.AddScoped<SystemUserService>();
 //builder.Services.AddScoped<SystemUserService>();
 builder.Services.AddScoped<ISystemUserService, SystemUserService>();
 //Controller está "contratando" ISystemUserService
+
+
+builder.Services.AddDbContext<RhContext>(options =>
+options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
