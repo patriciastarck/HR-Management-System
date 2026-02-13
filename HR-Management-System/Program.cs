@@ -17,6 +17,9 @@ builder.Services.AddDbContext<RhContext>();
 builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
 builder.Services.AddScoped<SystemUserService>();
 
+//builder.Services.AddScoped<SystemUserService>();
+builder.Services.AddScoped<ISystemUserService, SystemUserService>();
+//Controller está "contratando" ISystemUserService
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
