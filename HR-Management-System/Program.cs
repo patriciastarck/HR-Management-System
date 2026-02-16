@@ -20,19 +20,19 @@ builder.Services.AddScoped<SystemUserService>();
 
 //builder.Services.AddScoped<SystemUserService>();
 builder.Services.AddScoped<ISystemUserService, SystemUserService>();
-//Controller est· "contratando" ISystemUserService
+//Controller est√° "contratando" ISystemUserService
 
 
-builder.Services.AddDbContext<RhContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+//builder.Services.AddDbContext<RhContext>(options =>
+//options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -42,4 +42,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

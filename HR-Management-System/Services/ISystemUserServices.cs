@@ -4,9 +4,11 @@ namespace HR_Management_System.Services;
 
 public interface ISystemUserService
 {
-    Task<UserResponseDto> CreateAsync(UserRequestDto dto);
-    Task<UserResponseDto?> GetByIdAsync(int id);
+  Task<UserResponseDto> CreateAsync(UserRequestDto dto);
+  Task<UserResponseDto?> GetByIdAsync(int id);
 
-    // pega a lista de entidades e transformamos em uma lista de dtos
-    Task<IEnumerable<UserResponseDto>> GetAllAsync();
+  // pega a lista de entidades e transformamos em uma lista de dtos
+  Task<IEnumerable<UserResponseDto>> GetAllAsync();
+
+  Task<bool> DeleteAsync(int id);
 }
