@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using HR_Management_System.Dtos;
-using HR_Management_System.Services;
+using HR_Management_System.Application.Dtos;
+using HR_Management_System.Application.Services;
 
 namespace HR_Management_System.Controllers;
 
@@ -46,14 +46,4 @@ public class UsersController : ControllerBase
     return Ok(users);
   }
 
-  [HttpDelete("{id}")]
-  public async Task<IActionResult> Delete(int id)
-  {
-    var deleted = await _service.DeleteAsync(id);
-
-    if (!deleted)
-      return NotFound();
-
-    return NoContent();
-  }
 }
