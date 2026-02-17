@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HR_Management_System.Dtos;
+namespace HR_Management_System.Application.Dtos;
 
 public class UserResponseDto
 {
