@@ -36,13 +36,14 @@ public class UsersController : ControllerBase
     return Ok(user);
   }
 
-  [HttpGet] 
-  public async Task<IActionResult> GetAll()
-  {
-    // o controller pede a lista de usuarios ao servide
-    var users = await _service.GetAllAsync();
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        // o controller pede a lista de usuarios ao service
+        var users = await _service.GetAllAsync();
 
         // retorna a lista de usuarios para o cliente com status 200 OK
         return Ok(users);
     }
+
 }

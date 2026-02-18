@@ -1,3 +1,7 @@
+**bin/
+**/obj/Debug/
+appsettings.Development.json
+
 # Pastas de compilação e binários
 [Bb]in/
 [Oo]bj/
@@ -17,7 +21,7 @@ Desktop.ini
 # Entity Framework e Bancos de Dados locais
 *.db
 *.sqlite
-appsettings.Development.json
+
 
 # Outros arquivos de sistema
 .DS_Store
