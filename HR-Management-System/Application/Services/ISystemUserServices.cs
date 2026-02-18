@@ -1,8 +1,6 @@
 ﻿using HR_Management_System.Application.Dtos;
 
-
-using HR_Management_System.Application.Dtos;
-
+namespace HR_Management_System.Application.Services; 
 
 public interface ISystemUserService
 {

@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
-using HR_Management_System.Repositories;
 using HR_Management_System.Application.Dtos;
+using HR_Management_System.Infrastructure.Repositories;
 
 namespace HR_Management_System.Application.Validators;
-
 
 public class UserRequestDtoValidator : AbstractValidator<UserRequestDto>
 {
@@ -28,16 +27,16 @@ public class UserRequestDtoValidator : AbstractValidator<UserRequestDto>
                 return !await repository.LoginExists(login);
             }).WithMessage("Este login já está em uso.");
 
-        // Agora definimos as regras para a propriedade 'Password' (Senha)
-        RuleFor(x => x.Password)
+            // Agora definimos as regras para a propriedade 'Password' (Senha)
+            RuleFor(x => x.Password)
             // 1. Garante que o usuário digitou uma senha
             .NotEmpty().WithMessage("A senha é obrigatória.")
 
             // 2. Define que a senha precisa ter 6 ou mais caracteres por segurança
             .MinimumLength(6).WithMessage("A senha deve ter pelo menos 6 caracteres.");
 
-        // Por fim, as regras para a propriedade 'Role' (Cargo/Perfil)
-        RuleFor(x => x.Role)
+            // Por fim, as regras para a propriedade 'Role' (Cargo/Perfil)
+            RuleFor(x => x.Role)
             // Garante que o texto não ultrapasse 50 caracteres para não quebrar o banco de dados
             .MaximumLength(50).WithMessage("O cargo não pode exceder 50 caracteres.");
     }

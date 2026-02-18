@@ -1,8 +1,9 @@
 using System.Threading.Tasks;
 using HR_Management_System.Models;
 using Microsoft.EntityFrameworkCore;
+using HR_Management_System.Infrastructure.Repositories;
 
-namespace HR_Management_System.Repositories;
+namespace HR_Management_System.Infrastructure.Repositories;
 
 public class SystemUserRepository : ISystemUserRepository
 {
@@ -42,7 +43,5 @@ public class SystemUserRepository : ISystemUserRepository
   public async Task<IEnumerable<Systemuser>> GetAllAsync()
   {
     return await _context.Systemusers.ToListAsync();
-  }
-
- 
+  } 
 }

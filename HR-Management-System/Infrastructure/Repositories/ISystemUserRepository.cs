@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using HR_Management_System.Models;
 
-namespace HR_Management_System.Repositories;
+namespace HR_Management_System.Infrastructure.Repositories;
 
 public interface ISystemUserRepository
 {
@@ -29,6 +29,4 @@ public interface ISystemUserRepository
   /// Retrieves a Systemuser from database.
   /// </summary
   Task<IEnumerable<Systemuser>> GetAllAsync();
-
-  
 }
