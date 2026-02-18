@@ -8,23 +8,32 @@ using HR_Management_System.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --- 1. CONFIGURAÇÕES PADRÃO ---
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Register repository and service for Controller -> Service -> Repository flow
-builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
-builder.Services.AddScoped<ISystemUserService, SystemUserService>();
+// --- 2. CONFIGURAÇÃO DO FLUENT VALIDATION ---
+// Esta linha é fundamental para que o validador do User e do Employee funcionem!
+//builder.Services.AddFluentValidationAutoValidation();
 
+builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDtoValidator>();
+
+// --- 3. REGISTRO DE REPOSITÓRIOS ---
+builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); // <-- ADICIONADO
+
+// --- 4. REGISTRO DE SERVIÇOS ---
+builder.Services.AddScoped<ISystemUserService, SystemUserService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>(); // <-- ADICIONADO
+
+// --- 5. BANCO DE DADOS (PostgreSQL) ---
 builder.Services.AddDbContext<RhContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Registrar FluentValidation
-builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDtoValidator>();
-
 var app = builder.Build();
 
+// --- 6. PIPELINE DE EXECUÇÃO ---
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -34,4 +43,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
