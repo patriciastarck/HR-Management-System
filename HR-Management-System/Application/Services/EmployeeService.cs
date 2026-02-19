@@ -85,4 +85,10 @@ public class EmployeeService : IEmployeeService
   {
     return await _repository.DeleteAsync(id);
   }
+
+  public async Task<IEnumerable<EmployeeResponseDto>> GetAllFilteredAsync(string? name, bool? isActive)
+  {
+    var employees = await _repository.GetAllFilteredAsync(name, isActive);
+    return employees.Select(MapToResponseDto);
+  }
 }

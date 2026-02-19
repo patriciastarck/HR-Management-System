@@ -13,4 +13,5 @@ public interface IEmployeeRepository
   Task<Employee?> UpdateAsync(int id, Employee employee);
 
   Task<bool> DeleteAsync(int id);
+  Task<IEnumerable<Employee>> GetAllFilteredAsync(string? name, bool? isActive);
 }
