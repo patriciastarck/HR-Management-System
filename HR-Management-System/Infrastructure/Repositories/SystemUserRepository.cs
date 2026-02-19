@@ -43,5 +43,19 @@ public class SystemUserRepository : ISystemUserRepository
   public async Task<IEnumerable<Systemuser>> GetAllAsync()
   {
     return await _context.Systemusers.ToListAsync();
-  } 
+  }
+
+  public async Task<Systemuser?> UpdateAsync(int id, Systemuser updatedData)
+  {
+    var user = await _context.Systemusers.FindAsync(id);
+
+    if (user is null) return null;
+
+    if (updatedData.Login is not null) user.Login = updatedData.Login;
+    if (updatedData.Password is not null) user.Password = updatedData.Password;
+    if (updatedData.Role is not null) user.Role = updatedData.Role;
+
+    return user;
+  }
+
 }

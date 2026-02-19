@@ -36,14 +36,25 @@ public class UsersController : ControllerBase
     return Ok(user);
   }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        // o controller pede a lista de usuarios ao service
-        var users = await _service.GetAllAsync();
+  [HttpGet]
+  public async Task<IActionResult> GetAll()
+  {
+    // o controller pede a lista de usuarios ao service
+    var users = await _service.GetAllAsync();
 
-        // retorna a lista de usuarios para o cliente com status 200 OK
-        return Ok(users);
-    }
+    // retorna a lista de usuarios para o cliente com status 200 OK
+    return Ok(users);
+  }
+
+  [HttpPut("{id}")]
+  public async Task<IActionResult> Update(int id, UserRequestDto dto)
+  {
+    var updated = await _service.UpdateAsync(id, dto);
+
+    if (updated is null)
+      return NotFound();
+
+    return Ok(updated);
+  }
 
 }

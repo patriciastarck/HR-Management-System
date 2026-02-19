@@ -29,4 +29,6 @@ public interface ISystemUserRepository
   /// Retrieves a Systemuser from database.
   /// </summary
   Task<IEnumerable<Systemuser>> GetAllAsync();
+
+  Task<Systemuser?> UpdateAsync(int id, Systemuser user);
 }
