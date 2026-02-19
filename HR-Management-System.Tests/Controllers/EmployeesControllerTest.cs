@@ -1,12 +1,12 @@
-﻿using FluentValidation;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using HR_Management_System.Controllers;
 using HR_Management_System.Application.Services;
 using HR_Management_System.Application.Dtos;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace HR_Management_System.Tests.Controllers
 {
@@ -16,11 +16,9 @@ namespace HR_Management_System.Tests.Controllers
         private Mock<IEmployeeService> _serviceMock;
         private Mock<IValidator<EmployeeRequestDto>> _validatorMock;
         private EmployeesController _controller;
-<<<<<<< Updated upstream
-=======
 
         [SetUp]
-        public void Setup()
+        public void SetUp()
         {
             // 1. Instancia os Mocks
             _serviceMock = new Mock<IEmployeeService>();
@@ -44,7 +42,7 @@ namespace HR_Management_System.Tests.Controllers
             var response = new EmployeeResponseDto { Id = 1, Name = "Tobias", Cpf = "12345678901" };
 
             _validatorMock.Setup(v => v.ValidateAsync(request, default))
-                          .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+                          .ReturnsAsync(new ValidationResult());
 
             _serviceMock.Setup(s => s.CreateAsync(request)).ReturnsAsync(response);
 
@@ -57,64 +55,33 @@ namespace HR_Management_System.Tests.Controllers
             Assert.That(createdResult.ActionName, Is.EqualTo("GetById"));
             Assert.That(((EmployeeResponseDto)createdResult.Value).Name, Is.EqualTo("Tobias"));
         }
-                
+
         [Test]
         public async Task Create_ShouldReturnValidationProblem_WhenDataIsInvalid()
         {
             // Arrange
             var dto = new EmployeeRequestDto
             {
-                Name = "",            // inválido
-                Cpf = "123"           // inválido
+                Name = "",
+                Cpf = "123"
             };
 
             _validatorMock
                 .Setup(v => v.ValidateAsync(It.IsAny<EmployeeRequestDto>(), default))
-                .ReturnsAsync(new FluentValidation.Results.ValidationResult(
-                    new List<FluentValidation.Results.ValidationFailure>
+                .ReturnsAsync(new ValidationResult(
+                    new List<ValidationFailure>
                     {
-                new("Name", "Name is required")
+                        new("Name", "Name is required")
                     }
                 ));
 
             // Act
             var result = await _controller.Create(dto);
 
-            // Assert — forma correta
-            Assert.That(result, Is.InstanceOf<ObjectResult>());
-
+            // Assert
             var objectResult = result as ObjectResult;
             Assert.That(objectResult, Is.Not.Null);
-            Assert.That(objectResult!.Value, Is.Not.Null);
             Assert.That(objectResult.StatusCode ?? 400, Is.EqualTo(400));
->>>>>>> Stashed changes
-
-        [SetUp]
-        public void Setup()
-        {
-            _serviceMock = new Mock<IEmployeeService>();
-            _validatorMock = new Mock<IValidator<EmployeeRequestDto>>();
-            _controller = new EmployeesController(_serviceMock.Object, _validatorMock.Object);
-        }
-
-<<<<<<< Updated upstream
-        [Test]
-        public async Task Create_ShouldReturnCreatedAtAction_WithValidData()
-        {
-            // ARRANGE
-            var request = new EmployeeRequestDto { Name = "Tobias", Cpf = "12345678901" };
-            var response = new EmployeeResponseDto { Id = 1, Name = "Tobias", Cpf = "12345678901" };
-
-            _serviceMock.Setup(s => s.CreateAsync(request)).ReturnsAsync(response);
-
-            // ACT
-            var result = await _controller.Create(request);
-
-            // ASSERT
-            var createdResult = result as CreatedAtActionResult;
-            Assert.That(createdResult, Is.Not.Null);
-            Assert.That(createdResult.ActionName, Is.EqualTo("GetById"));
-            Assert.That(((EmployeeResponseDto)createdResult.Value).Name, Is.EqualTo("Tobias"));
         }
 
         [Test]
@@ -124,17 +91,6 @@ namespace HR_Management_System.Tests.Controllers
             _serviceMock.Setup(s => s.GetByIdAsync(999)).ReturnsAsync((EmployeeResponseDto?)null);
 
             // ACT
-=======
-        }
-
-        [Test]
-        public async Task GetById_ShouldReturnNotFound_WhenEmployeeDoesNotExist()
-        {
-            // ARRANGE
-            _serviceMock.Setup(s => s.GetByIdAsync(999)).ReturnsAsync((EmployeeResponseDto?)null);
-
-            // ACT
->>>>>>> Stashed changes
             var result = await _controller.GetById(999);
 
             // ASSERT
