@@ -10,4 +10,6 @@ public interface IEmployeeService
   Task<EmployeeResponseDto?> UpdateAsync(int id, EmployeeUpdateRequestDto dto); // ← NOVO
 
   Task<bool> DeleteAsync(int id);
+
+  Task<IEnumerable<EmployeeResponseDto>> GetAllFilteredAsync(string? name, bool? isActive);
 }

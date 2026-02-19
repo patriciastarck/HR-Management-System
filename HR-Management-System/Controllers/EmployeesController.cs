@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HR_Management_System.Application.Dtos;
 using HR_Management_System.Application.Services;
-using FluentValidation; // Adicione este using
+using FluentValidation;
 
 namespace HR_Management_System.Controllers;
 
@@ -10,24 +10,21 @@ namespace HR_Management_System.Controllers;
 public class EmployeesController : ControllerBase
 {
   private readonly IEmployeeService _service;
-  private readonly IValidator<EmployeeRequestDto> _validator; // Declarar o validador
+  private readonly IValidator<EmployeeRequestDto> _validator;
 
   public EmployeesController(IEmployeeService service, IValidator<EmployeeRequestDto> validator)
   {
     _service = service;
-    _validator = validator; // Injetar o validador corretamente
+    _validator = validator;
   }
 
   [HttpPost]
   public async Task<IActionResult> Create(EmployeeRequestDto dto)
   {
-    // 1. Executa a validação de forma ASSÍNCRONA
     var validationResult = await _validator.ValidateAsync(dto);
 
-    // 2. Verifica se houve erros
     if (!validationResult.IsValid)
     {
-      // Adiciona os erros ao ModelState para manter o padrão de resposta da API
       foreach (var error in validationResult.Errors)
       {
         ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
@@ -35,7 +32,6 @@ public class EmployeesController : ControllerBase
       return ValidationProblem(ModelState);
     }
 
-    // 3. Se estiver tudo OK, segue para o serviço
     var created = await _service.CreateAsync(dto);
     return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
   }
@@ -47,10 +43,14 @@ public class EmployeesController : ControllerBase
     return employee == null ? NotFound() : Ok(employee);
   }
 
+  // ← GetAll substituído com Query Parameters
   [HttpGet]
-  public async Task<IActionResult> GetAll()
+  public async Task<IActionResult> GetAll(
+      [FromQuery] string? name,
+      [FromQuery] bool? isActive)
   {
-    return Ok(await _service.GetAllAsync());
+    var employees = await _service.GetAllFilteredAsync(name, isActive);
+    return Ok(employees);
   }
 
   [HttpPut("{id}")]
@@ -72,6 +72,6 @@ public class EmployeesController : ControllerBase
     if (!deleted)
       return NotFound();
 
-    return NoContent(); // 204 - padrão para delete bem-sucedido
+    return NoContent();
   }
 }

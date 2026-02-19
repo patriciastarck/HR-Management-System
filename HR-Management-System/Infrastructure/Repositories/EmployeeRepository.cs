@@ -68,4 +68,17 @@ public class EmployeeRepository : IEmployeeRepository
 
     return true;
   }
+
+  public async Task<IEnumerable<Employee>> GetAllFilteredAsync(string? name, bool? isActive)
+  {
+    var query = _context.Employees.AsQueryable();
+
+    if (!string.IsNullOrWhiteSpace(name))
+      query = query.Where(e => e.Name.Contains(name));
+
+    if (isActive.HasValue)
+      query = query.Where(e => e.IsActive == isActive.Value);
+
+    return await query.ToListAsync();
+  }
 }
