@@ -34,6 +34,9 @@ builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+
 // --- 5. BANCO DE DADOS (PostgreSQL) ---
 builder.Services.AddDbContext<RhContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
