@@ -197,24 +197,40 @@ public partial class RhContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.EmployeeId).HasColumnName("employee_id");
-            entity.Property(e => e.EndDate).HasColumnName("end_date");
-            entity.Property(e => e.StartDate).HasColumnName("start_date");
+
+            // Configuração explícita para DateOnly no PostgreSQL
+            entity.Property(e => e.StartDate)
+                    .HasColumnName("start_date")
+                    .HasColumnType("date");
+
+            entity.Property(e => e.EndDate)
+                    .HasColumnName("end_date")
+                    .HasColumnType("date");
+
             entity.Property(e => e.Status)
                     .HasMaxLength(50)
                     .HasColumnName("status");
+
             entity.Property(e => e.TrainingId).HasColumnName("training_id");
+
             entity.Property(e => e.Type)
                     .HasMaxLength(50)
                     .HasColumnName("type");
 
-            entity.HasOne(d => d.Employee).WithMany(p => p.Trainingparticipations)
+            // Relacionamento com Employee
+            entity.HasOne(d => d.Employee)
+                    .WithMany(p => p.Trainingparticipations)
                     .HasForeignKey(d => d.EmployeeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    // Alterado para Cascade para evitar erros de constraint ao gerenciar funcionários
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_employee_participation");
 
-            entity.HasOne(d => d.Training).WithMany(p => p.Trainingparticipations)
+            // Relacionamento com Training
+            entity.HasOne(d => d.Training)
+                    .WithMany(p => p.Trainingparticipations)
                     .HasForeignKey(d => d.TrainingId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    // Alterado para Cascade: se o curso for excluído, as participações saem juntas
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_training_participation");
         });
 
