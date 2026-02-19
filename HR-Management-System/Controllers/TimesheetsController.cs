@@ -1,8 +1,7 @@
-﻿using HR_Management_System.Application.Dtos;
-using HR_Management_System.Infrastructure.Repositories;
+﻿using Microsoft.AspNetCore.Mvc;
 using HR_Management_System.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
+using HR_Management_System.Infrastructure.Repositories;
+using HR_Management_System.Application.Dtos;
 
 namespace HR_Management_System.Controllers;
 
@@ -27,13 +26,7 @@ public class TimesheetsController : ControllerBase
             EntryTime = dto.EntryTime,
             ExitTime = dto.ExitTime
         };
-        //Chama a regra criada na entidade!
-        if (!timesheet.ValidarHorarios())
-        {
-            return BadRequest("Erro: A hora de saída não pode ser antes da hora de entrada.");
-        }
 
-        // 3. Se passou na validação, vai salvar normal
         await _repository.AddAsync(timesheet);
         await _repository.SaveChangesAsync();
 

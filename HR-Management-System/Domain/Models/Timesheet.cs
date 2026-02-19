@@ -1,27 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace HR_Management_System.Models; // Ajuste o namespace se necessário
 
-namespace HR_Management_System.Models;
-
-public partial class Timesheet
+public class Timesheet
 {
     public int Id { get; set; }
-    public DateOnly Date { get; set; }
-    public TimeOnly? EntryTime { get; set; }
-    public TimeOnly? ExitTime { get; set; }
-
     public int EmployeeId { get; set; }
+    public DateOnly Date { get; set; }
+    public TimeOnly? EntryTime { get; set; } // Verifique se este nome está EXATAMENTE assim
+    public TimeOnly? ExitTime { get; set; }  // Verifique se este nome está EXATAMENTE assim
 
-    public virtual Employee Employee { get; set; } = null!;
-}
-public partial class Timesheet
-{
-    public bool ValidarHorarios()
-    {
-        if (ExitTime.HasValue && EntryTime.HasValue)
-        {
-            return ExitTime > EntryTime;
-        }
-        return true; // Se ainda não saiu, o estado é válido
-    }
+    // Provavelmente o erro está aqui embaixo, em alguma lógica de cálculo:
+    public TimeSpan? TotalHours => (ExitTime.HasValue && EntryTime.HasValue)
+        ? ExitTime.Value - EntryTime.Value
+        : null;
+
+    public virtual Employee? Employee { get; set; }
 }

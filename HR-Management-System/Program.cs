@@ -28,6 +28,7 @@ builder.Services.AddScoped<ITimesheetRepository, TimesheetRepository>();
 builder.Services.AddScoped<ISystemUserService, SystemUserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>(); // <-- ADICIONADO
 
+
 // --- 5. BANCO DE DADOS (PostgreSQL) ---
 builder.Services.AddDbContext<RhContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
