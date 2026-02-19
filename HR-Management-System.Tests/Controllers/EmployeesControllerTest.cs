@@ -15,6 +15,14 @@ namespace HR_Management_System.Tests.Controllers
     private Mock<IValidator<EmployeeRequestDto>> _validatorMock;
     private EmployeesController _controller;
 
+    [SetUp]
+    public void SetUp()
+    {
+      _serviceMock = new Mock<IEmployeeService>();
+      _validatorMock = new Mock<IValidator<EmployeeRequestDto>>();
+      _controller = new EmployeesController(_serviceMock.Object, _validatorMock.Object);
+    }
+
     [Test]
     public async Task Create_ShouldReturnCreatedAtAction_WithValidData()
     {
@@ -22,9 +30,8 @@ namespace HR_Management_System.Tests.Controllers
       var request = new EmployeeRequestDto { Name = "Tobias", Cpf = "12345678901" };
       var response = new EmployeeResponseDto { Id = 1, Name = "Tobias", Cpf = "12345678901" };
 
-
       _validatorMock.Setup(v => v.ValidateAsync(request, default))
-              .ReturnsAsync(new FluentValidation.Results.ValidationResult()); // No validation errors
+          .ReturnsAsync(new FluentValidation.Results.ValidationResult());
       _serviceMock.Setup(s => s.CreateAsync(request)).ReturnsAsync(response);
 
       // ACT
@@ -41,15 +48,15 @@ namespace HR_Management_System.Tests.Controllers
     public async Task Create_ShouldReturnValidationProblem_WhenDataIsInvalid()
     {
       // ARRANGE
-      var request = new EmployeeRequestDto { Name = "", Cpf = "invalid_cpf" }; // Invalid data
+      var request = new EmployeeRequestDto { Name = "", Cpf = "invalid_cpf" };
       var validationFailures = new List<FluentValidation.Results.ValidationFailure>
-          {
-            new FluentValidation.Results.ValidationFailure("Name", "Name is required."),
-            new FluentValidation.Results.ValidationFailure("Cpf", "Cpf is invalid.")
-          };
+            {
+                new FluentValidation.Results.ValidationFailure("Name", "Name is required."),
+                new FluentValidation.Results.ValidationFailure("Cpf", "Cpf is invalid.")
+            };
 
       _validatorMock.Setup(v => v.ValidateAsync(request, default))
-              .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
+          .ReturnsAsync(new FluentValidation.Results.ValidationResult(validationFailures));
 
       // ACT
       var result = await _controller.Create(request);
@@ -57,7 +64,7 @@ namespace HR_Management_System.Tests.Controllers
       // ASSERT
       var badRequestResult = result as ObjectResult;
       Assert.That(badRequestResult, Is.Not.Null);
-      Assert.That(badRequestResult.StatusCode, Is.EqualTo(400)); // ValidationProblem returns 400
+      Assert.That(badRequestResult.StatusCode, Is.EqualTo(400));
       Assert.That(badRequestResult.Value, Is.InstanceOf<ValidationProblemDetails>());
 
       var validationProblem = badRequestResult.Value as ValidationProblemDetails;
@@ -66,7 +73,6 @@ namespace HR_Management_System.Tests.Controllers
       Assert.That(validationProblem.Errors.ContainsKey("Cpf"));
       Assert.That(validationProblem.Errors["Cpf"], Does.Contain("Cpf is invalid."));
     }
-
 
     [Test]
     public async Task GetById_ShouldReturnNotFound_WhenEmployeeDoesNotExist()
