@@ -7,26 +7,26 @@ namespace HR_Management_System.Application.Services;
 
 public class SystemUserService : ISystemUserService
 {
-    private readonly ISystemUserRepository _repository;
+  private readonly ISystemUserRepository _repository;
 
-    public SystemUserService(ISystemUserRepository repository)
-    {
-        _repository = repository;
-    }
+  public SystemUserService(ISystemUserRepository repository)
+  {
+    _repository = repository;
+  }
 
   public async Task<UserResponseDto> CreateAsync(UserRequestDto dto)
   {
     if (dto is null)
       throw new ArgumentNullException(nameof(dto));
 
-        await ValidateLogin(dto.Login);
+    await ValidateLogin(dto.Login);
 
-        var user = new Systemuser
-        {
-            Login = dto.Login,
-            Password = dto.Password,
-            Role = dto.Role
-        };
+    var user = new Systemuser
+    {
+      Login = dto.Login,
+      Password = dto.Password,
+      Role = dto.Role
+    };
 
     await _repository.AddAsync(user);
     await _repository.SaveChangesAsync();
@@ -34,48 +34,68 @@ public class SystemUserService : ISystemUserService
     return MapToResponseDto(user);
   }
 
-    public async Task<UserResponseDto?> GetByIdAsync(int id)
+  public async Task<UserResponseDto?> GetByIdAsync(int id)
+  {
+    var user = await _repository.GetByIdAsync(id);
+
+    if (user is null)
+      return null;
+
+    return MapToResponseDto(user);
+  }
+
+  private async Task ValidateLogin(string login)
+  {
+    if (string.IsNullOrWhiteSpace(login))
+      throw new ArgumentException("Login obrigatório.");
+
+    if (login.Length < 4)
+      throw new ArgumentException("Login deve ter no mínimo 4 caracteres.");
+
+    if (login.Contains(' '))
+      throw new ArgumentException("Login não pode conter espaços.");
+
+    if (await _repository.LoginExists(login))
+      throw new InvalidOperationException("Login já existe.");
+  }
+
+  private static UserResponseDto MapToResponseDto(Systemuser user)
+  {
+    return new UserResponseDto
     {
-        var user = await _repository.GetByIdAsync(id);
+      Id = user.Id,
+      Login = user.Login,
+      Role = user.Role
+    };
+  }
 
-        if (user is null)
-            return null;
+  public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
+  {
+    // Obtemos a lista de entidades do repositório e guardamos na variável users
+    var users = await _repository.GetAllAsync();
 
-        return MapToResponseDto(user);
-    }
+    // Converte cada systemuser em um UserResponseDto
+    // O método Select é parte do LINQ (.Select) serve para mapear a lista de entidades.
+    return users.Select(MapToResponseDto);
+  }
 
-    private async Task ValidateLogin(string login)
+  public async Task<UserResponseDto?> UpdateAsync(int id, UserRequestDto dto)
+  {
+    if (dto is null) throw new ArgumentNullException(nameof(dto));
+
+    var updatedData = new Systemuser
     {
-        if (string.IsNullOrWhiteSpace(login))
-            throw new ArgumentException("Login obrigatório.");
+      Login = dto.Login,
+      Password = dto.Password,
+      Role = dto.Role
+    };
 
-        if (login.Length < 4)
-            throw new ArgumentException("Login deve ter no mínimo 4 caracteres.");
+    var user = await _repository.UpdateAsync(id, updatedData);
 
-        if (login.Contains(' '))
-            throw new ArgumentException("Login não pode conter espaços.");
+    if (user is null) return null;
 
-        if (await _repository.LoginExists(login))
-            throw new InvalidOperationException("Login já existe.");
-    }
+    await _repository.SaveChangesAsync();
 
-    private static UserResponseDto MapToResponseDto(Systemuser user)
-    {
-        return new UserResponseDto
-        {
-            Id = user.Id,
-            Login = user.Login,
-            Role = user.Role
-        };
-    }
-
-    public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
-    {
-        // Obtemos a lista de entidades do repositório e guardamos na variável users
-        var users = await _repository.GetAllAsync();
-
-        // Converte cada systemuser em um UserResponseDto
-        // O método Select é parte do LINQ (.Select) serve para mapear a lista de entidades.
-        return users.Select(MapToResponseDto);
-    }
+    return MapToResponseDto(user);
+  }
 }

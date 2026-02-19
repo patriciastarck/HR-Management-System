@@ -1,6 +1,6 @@
 ﻿using HR_Management_System.Application.Dtos;
 
-namespace HR_Management_System.Application.Services; 
+namespace HR_Management_System.Application.Services;
 
 public interface ISystemUserService
 {
@@ -9,6 +9,6 @@ public interface ISystemUserService
 
   // pega a lista de entidades e transformamos em uma lista de dtos
   Task<IEnumerable<UserResponseDto>> GetAllAsync();
+  Task<UserResponseDto?> UpdateAsync(int id, UserRequestDto dto);
 
-  
 }
