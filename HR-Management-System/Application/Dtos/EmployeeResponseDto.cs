@@ -8,4 +8,7 @@ public class EmployeeResponseDto
     //public string? Email { get; set; }
     //public bool IsActive { get; set; }
     //public string? DepartmentName { get; set; }
+
+    public string? DepartmentName { get; set; }
+    public string? JobTitleName { get; set; }
 }

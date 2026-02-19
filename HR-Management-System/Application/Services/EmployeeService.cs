@@ -49,16 +49,41 @@ public class EmployeeService : IEmployeeService
         return employees.Select(MapToResponseDto);
     }
 
-    private static EmployeeResponseDto MapToResponseDto(Employee employee)
+  public async Task<EmployeeResponseDto?> UpdateAsync(int id, EmployeeUpdateRequestDto dto)
+  {
+    if (dto is null) throw new ArgumentNullException(nameof(dto));
+
+    var updatedData = new Employee
     {
-        return new EmployeeResponseDto
-        {
-            Id = employee.Id,
-            Name = employee.Name,
-            Cpf = employee.Cpf,
-            //Email = employee.Email,
-            //IsActive = employee.IsActive ?? false,
-            //DepartmentName = employee.Department?.Name
-        };
-    }
+      Name = dto.Name,
+      Email = dto.Email,
+      Salary = dto.Salary,
+      IsActive = dto.IsActive,
+      DepartmentId = dto.DepartmentId,
+      JobTitleId = dto.JobTitleId
+    };
+
+    var employee = await _repository.UpdateAsync(id, updatedData);
+
+    if (employee is null) return null;
+
+    await _repository.SaveChangesAsync();
+
+    return MapToResponseDto(employee);
+  }
+
+  private static EmployeeResponseDto MapToResponseDto(Employee employee)
+  {
+    return new EmployeeResponseDto
+    {
+      Id = employee.Id,
+      Name = employee.Name,
+      Cpf = employee.Cpf,
+    };
+  }
+
+  public async Task<bool> DeleteAsync(int id)
+  {
+    return await _repository.DeleteAsync(id);
+  }
 }
