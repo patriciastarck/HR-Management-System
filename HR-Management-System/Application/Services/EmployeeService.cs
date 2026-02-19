@@ -80,4 +80,9 @@ public class EmployeeService : IEmployeeService
       Cpf = employee.Cpf,
     };
   }
+
+  public async Task<bool> DeleteAsync(int id)
+  {
+    return await _repository.DeleteAsync(id);
+  }
 }

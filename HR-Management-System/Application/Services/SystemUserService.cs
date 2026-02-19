@@ -1,7 +1,7 @@
+
 using HR_Management_System.Models;
 using HR_Management_System.Infrastructure.Repositories;
 using HR_Management_System.Application.Dtos;
-using FluentValidation;
 
 namespace HR_Management_System.Application.Services;
 
@@ -16,8 +16,7 @@ public class SystemUserService : ISystemUserService
 
   public async Task<UserResponseDto> CreateAsync(UserRequestDto dto)
   {
-    if (dto is null)
-      throw new ArgumentNullException(nameof(dto));
+    if (dto is null) throw new ArgumentNullException(nameof(dto));
 
     await ValidateLogin(dto.Login);
 
@@ -37,11 +36,39 @@ public class SystemUserService : ISystemUserService
   public async Task<UserResponseDto?> GetByIdAsync(int id)
   {
     var user = await _repository.GetByIdAsync(id);
+    if (user is null) return null;
+    return MapToResponseDto(user);
+  }
 
-    if (user is null)
-      return null;
+  public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
+  {
+    var users = await _repository.GetAllAsync();
+    return users.Select(MapToResponseDto);
+  }
+
+  public async Task<UserResponseDto?> UpdateAsync(int id, UserRequestDto dto)
+  {
+    if (dto is null) throw new ArgumentNullException(nameof(dto));
+
+    var updatedData = new Systemuser
+    {
+      Login = dto.Login,
+      Password = dto.Password,
+      Role = dto.Role
+    };
+
+    var user = await _repository.UpdateAsync(id, updatedData);
+
+    if (user is null) return null;
+
+    await _repository.SaveChangesAsync();
 
     return MapToResponseDto(user);
+  }
+
+  public async Task<bool> DeleteAsync(int id)
+  {
+    return await _repository.DeleteAsync(id);
   }
 
   private async Task ValidateLogin(string login)
@@ -67,35 +94,5 @@ public class SystemUserService : ISystemUserService
       Login = user.Login,
       Role = user.Role
     };
-  }
-
-  public async Task<IEnumerable<UserResponseDto>> GetAllAsync()
-  {
-    // Obtemos a lista de entidades do repositório e guardamos na variável users
-    var users = await _repository.GetAllAsync();
-
-    // Converte cada systemuser em um UserResponseDto
-    // O método Select é parte do LINQ (.Select) serve para mapear a lista de entidades.
-    return users.Select(MapToResponseDto);
-  }
-
-  public async Task<UserResponseDto?> UpdateAsync(int id, UserRequestDto dto)
-  {
-    if (dto is null) throw new ArgumentNullException(nameof(dto));
-
-    var updatedData = new Systemuser
-    {
-      Login = dto.Login,
-      Password = dto.Password,
-      Role = dto.Role
-    };
-
-    var user = await _repository.UpdateAsync(id, updatedData);
-
-    if (user is null) return null;
-
-    await _repository.SaveChangesAsync();
-
-    return MapToResponseDto(user);
   }
 }
