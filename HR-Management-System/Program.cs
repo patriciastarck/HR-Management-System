@@ -22,6 +22,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDtoValidator>();
 // --- 3. REGISTRO DE REPOSIT�RIOS ---
 builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); // <-- ADICIONADO
+builder.Services.AddScoped<ITimesheetRepository, TimesheetRepository>();
 
 // --- 4. REGISTRO DE SERVI�OS ---
 builder.Services.AddScoped<ISystemUserService, SystemUserService>();
