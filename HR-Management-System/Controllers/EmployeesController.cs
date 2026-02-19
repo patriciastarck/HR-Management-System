@@ -63,4 +63,15 @@ public class EmployeesController : ControllerBase
 
     return Ok(updated);
   }
+
+  [HttpDelete("{id}")]
+  public async Task<IActionResult> Delete(int id)
+  {
+    var deleted = await _service.DeleteAsync(id);
+
+    if (!deleted)
+      return NotFound();
+
+    return NoContent(); // 204 - padrão para delete bem-sucedido
+  }
 }

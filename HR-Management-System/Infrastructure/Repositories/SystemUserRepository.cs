@@ -1,3 +1,4 @@
+
 using System.Threading.Tasks;
 using HR_Management_System.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +17,7 @@ public class SystemUserRepository : ISystemUserRepository
 
   public async Task<bool> LoginExists(string login)
   {
-    if (string.IsNullOrWhiteSpace(login))
-    {
-      return false;
-    }
-
-    // Simple equality check. Database has unique index on login.
+    if (string.IsNullOrWhiteSpace(login)) return false;
     return await _context.Systemusers.AnyAsync(u => u.Login == login);
   }
 
@@ -58,4 +54,15 @@ public class SystemUserRepository : ISystemUserRepository
     return user;
   }
 
+  public async Task<bool> DeleteAsync(int id)
+  {
+    var user = await _context.Systemusers.FindAsync(id);
+
+    if (user is null) return false;
+
+    _context.Systemusers.Remove(user);
+    await _context.SaveChangesAsync();
+
+    return true;
+  }
 }

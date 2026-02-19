@@ -6,9 +6,7 @@ public interface ISystemUserService
 {
   Task<UserResponseDto> CreateAsync(UserRequestDto dto);
   Task<UserResponseDto?> GetByIdAsync(int id);
-
-  // pega a lista de entidades e transformamos em uma lista de dtos
   Task<IEnumerable<UserResponseDto>> GetAllAsync();
   Task<UserResponseDto?> UpdateAsync(int id, UserRequestDto dto);
-
+  Task<bool> DeleteAsync(int id); // ← NOVO
 }

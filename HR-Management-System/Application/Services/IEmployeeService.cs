@@ -8,4 +8,6 @@ public interface IEmployeeService
   Task<EmployeeResponseDto?> GetByIdAsync(int id);
   Task<IEnumerable<EmployeeResponseDto>> GetAllAsync();
   Task<EmployeeResponseDto?> UpdateAsync(int id, EmployeeUpdateRequestDto dto); // ← NOVO
+
+  Task<bool> DeleteAsync(int id);
 }
