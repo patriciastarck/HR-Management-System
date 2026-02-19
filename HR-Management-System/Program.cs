@@ -8,23 +8,23 @@ using HR_Management_System.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. CONFIGURAÇÕES PADRÃO ---
+// --- 1. CONFIGURAï¿½ï¿½ES PADRï¿½O ---
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// --- 2. CONFIGURAÇÃO DO FLUENT VALIDATION ---
-// Esta linha é fundamental para que o validador do User e do Employee funcionem!
+// --- 2. CONFIGURAï¿½ï¿½O DO FLUENT VALIDATION ---
+// Esta linha ï¿½ fundamental para que o validador do User e do Employee funcionem!
 //builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestDtoValidator>();
 
-// --- 3. REGISTRO DE REPOSITÓRIOS ---
+// --- 3. REGISTRO DE REPOSITï¿½RIOS ---
 builder.Services.AddScoped<ISystemUserRepository, SystemUserRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>(); // <-- ADICIONADO
 builder.Services.AddScoped<ITimesheetRepository, TimesheetRepository>();
 
-// --- 4. REGISTRO DE SERVIÇOS ---
+// --- 4. REGISTRO DE SERVIï¿½OS ---
 builder.Services.AddScoped<ISystemUserService, SystemUserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>(); // <-- ADICIONADO
 
@@ -34,11 +34,11 @@ builder.Services.AddDbContext<RhContext>(options =>
 
 var app = builder.Build();
 
-// --- 6. PIPELINE DE EXECUÇÃO ---
+// --- 6. PIPELINE DE EXECUï¿½ï¿½O ---
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

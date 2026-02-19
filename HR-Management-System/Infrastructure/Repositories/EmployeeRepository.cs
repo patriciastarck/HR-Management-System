@@ -5,28 +5,28 @@ namespace HR_Management_System.Infrastructure.Repositories;
 
 public class EmployeeRepository : IEmployeeRepository
 {
-    private readonly RhContext _context;
+  private readonly RhContext _context;
 
-    public EmployeeRepository(RhContext context)
-    {
-        _context = context;
-    }
+  public EmployeeRepository(RhContext context)
+  {
+    _context = context;
+  }
 
-    public async Task<bool> CpfExists(string cpf)
-    {
-        if (string.IsNullOrWhiteSpace(cpf)) return false;
-        return await _context.Employees.AnyAsync(e => e.Cpf == cpf);
-    }
+  public async Task<bool> CpfExists(string cpf)
+  {
+    if (string.IsNullOrWhiteSpace(cpf)) return false;
+    return await _context.Employees.AnyAsync(e => e.Cpf == cpf);
+  }
 
-    public async Task AddAsync(Employee employee)
-    {
-        await _context.Employees.AddAsync(employee);
-    }
+  public async Task AddAsync(Employee employee)
+  {
+    await _context.Employees.AddAsync(employee);
+  }
 
-    public async Task SaveChangesAsync()
-    {
-        await _context.SaveChangesAsync();
-    }
+  public async Task SaveChangesAsync()
+  {
+    await _context.SaveChangesAsync();
+  }
 
   public async Task<Employee?> GetByIdAsync(int id)
   {

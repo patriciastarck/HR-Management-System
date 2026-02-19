@@ -19,31 +19,37 @@ public class UsersController : ControllerBase
   public async Task<IActionResult> Create(UserRequestDto dto)
   {
     var created = await _service.CreateAsync(dto);
-
-    return CreatedAtAction(nameof(GetById),
-        new { id = created.Id },
-        created);
+    return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
   }
 
   [HttpGet("{id}")]
   public async Task<IActionResult> GetById(int id)
   {
     var user = await _service.GetByIdAsync(id);
-
-    if (user is null)
-      return NotFound();
-
+    if (user is null) return NotFound();
     return Ok(user);
   }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        // o controller pede a lista de usuarios ao service
-        var users = await _service.GetAllAsync();
+  [HttpGet]
+  public async Task<IActionResult> GetAll()
+  {
+    var users = await _service.GetAllAsync();
+    return Ok(users);
+  }
 
-        // retorna a lista de usuarios para o cliente com status 200 OK
-        return Ok(users);
-    }
+  [HttpPut("{id}")]
+  public async Task<IActionResult> Update(int id, UserRequestDto dto)
+  {
+    var updated = await _service.UpdateAsync(id, dto);
+    if (updated is null) return NotFound();
+    return Ok(updated);
+  }
 
+  [HttpDelete("{id}")]
+  public async Task<IActionResult> Delete(int id)
+  {
+    var deleted = await _service.DeleteAsync(id);
+    if (!deleted) return NotFound();
+    return NoContent(); // 204
+  }
 }
