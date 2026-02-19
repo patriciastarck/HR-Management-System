@@ -1,14 +1,14 @@
-﻿namespace HR_Management_System.Models; // Ajuste o namespace se necessário
+namespace HR_Management_System.Models;
 
 public class Timesheet
 {
     public int Id { get; set; }
     public int EmployeeId { get; set; }
     public DateOnly Date { get; set; }
-    public TimeOnly? EntryTime { get; set; } // Verifique se este nome está EXATAMENTE assim
-    public TimeOnly? ExitTime { get; set; }  // Verifique se este nome está EXATAMENTE assim
+    public TimeOnly? EntryTime { get; set; }
+    public TimeOnly? ExitTime { get; set; }
 
-    // Provavelmente o erro está aqui embaixo, em alguma lógica de cálculo:
+    // Propriedade calculada para o total de horas
     public TimeSpan? TotalHours => (ExitTime.HasValue && EntryTime.HasValue)
         ? ExitTime.Value - EntryTime.Value
         : null;
